@@ -85,7 +85,7 @@ class MotorDriver(Node):
         else:
             # counts per loop = req rads/sec X revs/rad X counts/rev X secs/loop 
             scaler = (1 / (2 * math.pi)) * self.get_parameter('encoder_cpr').value * (
-                        1 / self.get_parameter('loop_rate').value)
+                    1 / self.get_parameter('loop_rate').value)
             mot1_ct_per_loop = motor_command.mot_1_req_rad_sec * scaler
             mot2_ct_per_loop = motor_command.mot_2_req_rad_sec * scaler
             self.send_feedback_motor_command(mot1_ct_per_loop, mot2_ct_per_loop)
@@ -119,7 +119,9 @@ class MotorDriver(Node):
     # Utility functions
 
     def send_command(self, cmd_string):
-
+        log = True
+        if cmd_string == f"e":
+            log = False
         self.mutex.acquire()
         try:
             cmd_string += "\r"
@@ -135,7 +137,7 @@ class MotorDriver(Node):
                 if (c == ''):
                     print("Error: Serial timeout on command: " + cmd_string)
                     return ''
-                elif cmd_string != "e":
+                elif log:
                     print("Executed Command: " + cmd_string)
                 value += c
 
